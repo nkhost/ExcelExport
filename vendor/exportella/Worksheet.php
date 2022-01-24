@@ -148,12 +148,14 @@ class Worksheet
     $type = '';
     if (is_string($value)) {
       $type = 't="s"';
-      $v = $this->sharedStrings->getStringIndex($value);
+      $v = '<v>' . $this->sharedStrings->getStringIndex($value) . '</v>';
     } elseif (is_numeric($value)) {
-      $v = $value;
+      $v = "<v>$value</v>";
     } elseif ($value === null) {
       $v = '';
-    }else {
+    } elseif ($value instanceof Formula) {
+      $v = "<f>$value</f>";
+    } else {
       throw new Exception('Wrong data type');
     }
     
@@ -171,7 +173,7 @@ class Worksheet
     // Если значение = null, то ячейку удаляем
     if ($value !== null) {
       // Записываем в результирующую строку ячейку
-      $result .= "<c r=\"$coordinates\" $style $type><v>$v</v></c>";
+      $result .= "<c r=\"$coordinates\" $style $type>$v</c>";
     }
     
     // Записываем в результирующую строку от искомой ячейки до конца документа
@@ -297,22 +299,25 @@ class Worksheet
     for ($i = 0; $i < count($dataList); $i++) {
       if (is_string($dataList[$i])) {
         $t = ' t="s"';
-        $v = $this->sharedStrings->getStringIndex($dataList[$i], $ignoreDuplicates);
+        $v = '<v>' . $this->sharedStrings->getStringIndex($dataList[$i], $ignoreDuplicates) . '</v>';
       } elseif (is_numeric($dataList[$i])) {
         $t = '';
-        $v = $dataList[$i];
+        $v = '<v>' . $dataList[$i] . '</v>';
+      } elseif ($dataList[$i] instanceof Formula) {
+        $t = '';
+        $v = '<f>' . $dataList[$i] . '</f>';
       } else {
         continue;
       }
-      
+  
       $s = !empty($stylesList) && isset($stylesList[$i]) ? ' s="' . $stylesList[$i] . '"' : '';
       if (isset($this->insertColumns[$i])) {
-        $row .= '<c r="' . $this->insertColumns[$i] . $this->rowIndex . '"' . $s . $t . '><v>' . $v . '</v></c>';
+        $row .= '<c r="' . $this->insertColumns[$i] . $this->rowIndex . '"' . $s . $t . '>' . $v . '</c>';
       }
     }
     $row .= '</row>';
     fputs($this->insertFile, $row);
-    
+  
     $this->rowIndex++;
     $this->insertedRows++;
   }

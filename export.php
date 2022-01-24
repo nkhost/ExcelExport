@@ -3,8 +3,10 @@ require_once './vendor/exportella/PclZip.php';
 require_once './vendor/exportella/Workbook.php';
 require_once './vendor/exportella/Worksheet.php';
 require_once './vendor/exportella/SharedStrings.php';
+require_once './vendor/exportella/Formula.php';
 
 use Exportella\Workbook;
+use Exportella\Formula;
 
 //$workbook = new Workbook(__DIR__ . '/templates/template.xlsx', __DIR__ . '/data');
 $workbook = new Workbook(__DIR__ . '/templates/template.xlsx');
@@ -32,7 +34,11 @@ $sheet->setCellValue('S4', null);
 
 
 $sheet->setCellValue('C2', "Тест", $style1);
-$sheet->setCellValue('C3', "Какой то текст", $style3);
+
+
+$sum = new Formula('SUM(H7:H1006)');
+$sheet->setCellValue('C3', $sum, $style3);
+
 $sheet->setCellValue('C10', "Тест", $style4);
 $sheet->setCellValue('C11', "Тест", $style6);
 
@@ -43,20 +49,21 @@ $sheet->initRowsInserting(7, ['B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 
 
 $styleMap = [0 => $style1, 1 => $style2, 2 => $style3, 3 => $style4, 4 => $style5];
 
-for ($i = 0; $i < 100000; $i++) {
+for ($i = 0; $i < 10000; $i++) {
+  $f = new Formula('J' . ($i + 7) . '+M' . ($i + 7));
   $v2 = rand(0, 4);
   $s2 = $styleMap[$v2];
   $sheet->insertRow([
     $v2,
     'привет' . rand(0, 5000),
     3,
-    4,
+    $f,
     "sdfs",
     6234.232,
     7,
     8,
     rand(0, 5000),
-    'Что то ещё там ' . rand(0, 5000),
+    rand(0, 5000),
     'Что то ещё там ' . rand(0, 5000),
     'Что то ещё там ' . rand(0, 5000),
     'Что то ещё там ' . rand(0, 5000)
