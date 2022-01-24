@@ -263,12 +263,12 @@ class Worksheet
     if (!$this->insertFile) {
       throw new Exception('Can\'t open file');
     }
-    
-    $this->rowTagOffset = strpos($this->xml, "<row r=\"$rowId\""); // TODO: Вероятно параметр r может стоять не первым в списке
-    
-    if (!$this->rowTagOffset) {
+  
+    preg_match("/<row[^>]+r=\"$rowId\"/", $this->xml, $matches, PREG_OFFSET_CAPTURE);
+    if (!isset($matches[0][1])) {
       throw new Exception('Row does not exists in sheet');
     }
+    $this->rowTagOffset = $matches[0][1];
     
     $this->rowCloseTagEndOffset = strpos($this->xml, '</row>', $this->rowTagOffset) + 6;
     
@@ -291,9 +291,14 @@ class Worksheet
    * @param float|null $height Высота строки
    * @param bool $ignoreDuplicates Не искать строковое значение среди существующих, а записать как новую
    * @return void
+   * @throws Exception
    */
   public function insertRow(array $dataList, ?array $stylesList = [], ?float $height = null, bool $ignoreDuplicates = true): void
   {
+    if(!$this->insertFile){
+      throw new Exception('File not open');
+    }
+    
     $ht = $height ? ' ht="' . number_format($height, 2, '.', '') . '" customHeight="1"' : '';
     $row = '<row r="' . $this->rowIndex . '"' . $ht . '>';
     for ($i = 0; $i < count($dataList); $i++) {
@@ -352,5 +357,6 @@ class Worksheet
     // Записываем в файл sheet_.xml Всё после вставляемого блока
     fputs($this->insertFile, $tail);
     fclose($this->insertFile);
+    $this->insertFile = false;
   }
 }

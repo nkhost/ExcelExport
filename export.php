@@ -73,5 +73,13 @@ for ($i = 0; $i < 10000; $i++) {
 }
 $sheet->finishRowsInserting();
 
+// Лист 2
+$sheet2 = $workbook->getWorksheet(2);
+$sheet2->initRowsInserting(1, ['A', 'B', 'C', 'D', 'E']);
+for ($i = 1; $i < 100000; $i++) {
+  $sheet2->insertRow([new Formula('SUM(B' . $i . ':D' . $i . ')'), rand(0, 10), rand(0, 10), rand(0, 10), substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(20 / strlen($x)))), 1, 20)]);
+}
+$sheet2->finishRowsInserting();
+
 $workbook->createXlsx(__DIR__ . '/data/test.xlsx');
 $workbook->clean();
