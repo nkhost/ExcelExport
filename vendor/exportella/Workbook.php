@@ -28,6 +28,12 @@ class Workbook
   protected $unpackedDir;
   
   /**
+   * Путь к файлу workbook.xml
+   * @var string
+   */
+  protected $workbookPath;
+  
+  /**
    * Объект для работы с sharedStrings.xml
    * @var SharedStrings
    */
@@ -55,6 +61,7 @@ class Workbook
     if (empty($zip->extract(PclZip::PCLZIP_OPT_REPLACE_NEWER, PclZip::PCLZIP_OPT_PATH, $this->unpackedDir))) {
       throw new Exception('Unable to extract xlsx file');
     }
+    $this->workbookPath = $this->unpackedDir . '/xl/workbook.xml';
   }
   
   /**
@@ -95,6 +102,24 @@ class Workbook
     $this->getSharedStrings()->save();
     $zip = new PclZip($destination);
     $zip->create($this->unpackedDir, null, $this->unpackedDir);
+  }
+  
+  /**
+   * Переименовать лист
+   *
+   * @param int $number Идентификатор листа
+   * @param string $newName Новое название листа
+   * @return void
+   * @throws Exception
+   */
+  public function renameWorksheet(int $number, string $newName)
+  {
+    if (!$this->workbookPath || !file_exists($this->workbookPath)) {
+      throw new \Exception('Не найден файл workbook.xml');
+    }
+    $workbookXml = file_get_contents($this->workbookPath);
+    $workbookXml = preg_replace('/(<sheet name=\")([^\"]+)(\"[^>]+sheetId=\"' . $number . '\"[^>]+>)/', '$1' . preg_quote($newName, '/') . '$3', $workbookXml);
+    file_put_contents($this->workbookPath, $workbookXml);
   }
   
   /**

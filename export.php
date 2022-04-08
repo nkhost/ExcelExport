@@ -12,6 +12,9 @@ use Exportella\Formula;
 $workbook = new Workbook(__DIR__ . '/templates/template.xlsx');
 $workbook->extract();
 
+$workbook->renameWorksheet(1, 'Новое $1 название');
+$workbook->renameWorksheet(2, 'Новое название для второго листа');
+
 $sheet = $workbook->getWorksheet(1);
 
 // Сохраняем номера стилей
