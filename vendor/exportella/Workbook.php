@@ -123,6 +123,67 @@ class Workbook
   }
   
   /**
+   * Клонирование листа. Клонирует любой существующий лист в конец документа с указанным названием
+   *
+   * @param int $number Номер листа, который собираемся клонировать
+   * @param string $newName Новое название для нового листа
+   * @return void
+   * @throws Exception
+   */
+  public function cloneWorksheet(int $number, string $newName)
+  {
+    if (!$this->workbookPath || !file_exists($this->workbookPath)) {
+      throw new \Exception('Не найден файл workbook.xml');
+    }
+    
+    // Получаем номер нового листа (номер последнего +1)
+    $matchesWorkbook = [];
+    $workbookXml = file_get_contents($this->workbookPath);
+    preg_match_all('/<sheet[^>]+sheetId=\"([^\"])\"[^>]+>/', $workbookXml, $matchesWorkbook);
+    if (empty($matchesWorkbook) || empty($matchesWorkbook[1])) {
+      throw new \Exception('Ошибка при поиске листов в workbook');
+    }
+    $newWorksheetNumber = (int)max($matchesWorkbook[1]) + 1;
+    
+    if ($newWorksheetNumber < 2) {
+      throw new \Exception('Ошибка при определении номера клонируемого листа');
+    }
+    
+    // Определяем идентификатор для листа
+    $relsXml = [];
+    $workbookRelsXml = file_get_contents($this->unpackedDir . '/xl/_rels/workbook.xml.rels');
+    preg_match_all('/<Relationship[^>]Id=\"rId([0-9]+)\"/', $workbookRelsXml, $relsXml);
+    if (empty($relsXml) || empty($relsXml[1])) {
+      throw new \Exception('Ошибка при поиске rId в workbook.xml.rels');
+    }
+    $newRId = (int)max($relsXml[1]) + 1;
+    if ($newRId < 2) {
+      throw new \Exception('Ошибка при определении номера клонируемого листа');
+    }
+    
+    // Добавляем запись с информацией о новом листе в файл со ссылками (workbook.xml.rels)
+    $workbookRelsXml = str_replace(
+      '</Relationships>',
+      '<Relationship Id="rId' . $newRId . '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' . $newWorksheetNumber . '.xml"/></Relationships>',
+      $workbookRelsXml
+    );
+    file_put_contents($this->unpackedDir . '/xl/_rels/workbook.xml.rels', $workbookRelsXml);
+    
+    // Копируем содержимое листа
+    if (!copy($this->unpackedDir . '/xl/worksheets/sheet' . $number . '.xml', $this->unpackedDir . '/xl/worksheets/sheet' . $newWorksheetNumber . '.xml')) {
+      throw new \Exception('Ошибка при копировании worksheet.xml');
+    }
+    
+    // Добавляем запись с информацией о новом листе в файл workbook.xml
+    $workbookXml = str_replace(
+      '</sheets>',
+      '<sheet name="' . preg_quote($newName, '/') . '" sheetId="' . $newWorksheetNumber . '" r:id="rId' . $newRId . '"/></sheets>',
+      $workbookXml
+    );
+    file_put_contents($this->workbookPath, $workbookXml);
+  }
+  
+  /**
    * Удалить временные файлы
    *
    * @return void
