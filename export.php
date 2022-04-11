@@ -7,6 +7,7 @@ require_once './vendor/exportella/Formula.php';
 
 use Exportella\Workbook;
 use Exportella\Formula;
+use Exportella\SharedStrings;
 
 //$workbook = new Workbook(__DIR__ . '/templates/template.xlsx', __DIR__ . '/data');
 $workbook = new Workbook(__DIR__ . '/templates/template.xlsx');
@@ -14,7 +15,7 @@ $workbook->extract();
 
 $workbook->renameWorksheet(1, 'Новое название 1');
 $workbook->renameWorksheet(2, 'Новое название 2');
-$workbook->cloneWorksheet(1,'Третий');
+$workbook->cloneWorksheet(1, 'Третий');
 
 $sheet = $workbook->getWorksheet(1);
 
@@ -61,7 +62,7 @@ for ($i = 0; $i < 10000; $i++) {
     $v2,
     '    <r><t>привет</t></r>
          <r><rPr><sz val="11"/><color rgb="FF0000"/></rPr>
-         <t xml:space="preserve"> ' . rand(0, 5000).'</t></r>',
+         <t xml:space="preserve"> ' . rand(0, 5000) . '</t></r>',
     3,
     $f,
     "sdfs",
@@ -70,16 +71,11 @@ for ($i = 0; $i < 10000; $i++) {
     8,
     rand(0, 5000),
     rand(0, 5000),
-    '<r><t>Обычный текст</t></r>
-     <r>
-         <rPr><sz val="11"/><color rgb="FF0000"/></rPr>
-         <t xml:space="preserve"> Красный текст</t>
-     </r>
-     <r>
-         <rPr><sz val="18"/><color rgb="22AA00"/></rPr>
-         <t xml:space="preserve"> Зелёный текст</t>
-     </r>
-     ',
+    SharedStrings::customString(
+      ['Обычный текст ', 'Красный текст ', 'Зелёный текст'],
+      [null, 'FF0000', '22AA00'],
+      [null, null, 20]
+    ),
     'Что то ещё там ' . rand(0, 5000),
     'Что то ещё там ' . rand(0, 5000)
   ],

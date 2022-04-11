@@ -137,4 +137,31 @@ class SharedStrings
     
     return $stringIndex;
   }
+  
+  /**
+   * Сформировать строку из подстрок. Каждая подстрока может иметь свой цвет и размер шрифта
+   * @param array $strings Массив строк
+   * @param array $colors Массив цветов в формате RGB (FF22AA) в соответствии с массивом строк. Null - не менять цвет
+   * @param array $sizes Массив размеров в соответствии с массивом строк. Null - не менять размер
+   * @return string Строка в XML формате
+   */
+  public static function customString($strings, $colors = [], $sizes = [])
+  {
+    $result = '';
+    foreach ($strings as $index => $string) {
+      $result .= '<r>';
+      if (!empty($colors[$index]) || !empty($sizes[$index])) {
+        $result .= '<rPr>';
+        if (!empty($colors[$index])) {
+          $result .= '<color rgb="' . $colors[$index] . '"/>';
+        }
+        if (!empty($sizes[$index])) {
+          $result .= '<sz val="' . $sizes[$index] . '"/>';
+        }
+        $result .= '</rPr>';
+      }
+      $result .= '<t xml:space="preserve">' . $string . '</t></r>';
+    }
+    return $result;
+  }
 }
