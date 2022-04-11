@@ -8,8 +8,8 @@ require_once './vendor/exportella/Formula.php';
 use Exportella\Workbook;
 use Exportella\Formula;
 
-$workbook = new Workbook(__DIR__ . '/templates/template.xlsx', __DIR__ . '/data');
-//$workbook = new Workbook(__DIR__ . '/templates/template.xlsx');
+//$workbook = new Workbook(__DIR__ . '/templates/template.xlsx', __DIR__ . '/data');
+$workbook = new Workbook(__DIR__ . '/templates/template.xlsx');
 $workbook->extract();
 
 $workbook->renameWorksheet(1, 'Новое название 1');
@@ -59,7 +59,9 @@ for ($i = 0; $i < 10000; $i++) {
   $s2 = $styleMap[$v2];
   $sheet->insertRow([
     $v2,
-    'привет' . rand(0, 5000),
+    '    <r><t>привет</t></r>
+         <r><rPr><sz val="11"/><color rgb="FF0000"/></rPr>
+         <t xml:space="preserve"> ' . rand(0, 5000).'</t></r>',
     3,
     $f,
     "sdfs",
@@ -68,7 +70,16 @@ for ($i = 0; $i < 10000; $i++) {
     8,
     rand(0, 5000),
     rand(0, 5000),
-    'Что то ещё там ' . rand(0, 5000),
+    '<r><t>Обычный текст</t></r>
+     <r>
+         <rPr><sz val="11"/><color rgb="FF0000"/></rPr>
+         <t xml:space="preserve"> Красный текст</t>
+     </r>
+     <r>
+         <rPr><sz val="18"/><color rgb="22AA00"/></rPr>
+         <t xml:space="preserve"> Зелёный текст</t>
+     </r>
+     ',
     'Что то ещё там ' . rand(0, 5000),
     'Что то ещё там ' . rand(0, 5000)
   ],
@@ -86,4 +97,4 @@ for ($i = 1; $i < 1000; $i++) {
 $sheet2->finishRowsInserting();
 
 $workbook->createXlsx(__DIR__ . '/data/test.xlsx');
-//$workbook->clean();
+$workbook->clean();

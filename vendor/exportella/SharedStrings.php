@@ -2,7 +2,7 @@
 
 namespace Exportella;
 
-use \Exception;
+use Exception;
 
 /**
  * Класс для работы с SharedStrings.xml
@@ -102,9 +102,13 @@ class SharedStrings
     }
     
     if (!empty($this->strings)) {
-      
       foreach ($this->strings as $string) {
-        fputs($this->file, '<si><t>' . $string . '</t></si>');
+        if (strpos($string, '<r>') !== false) {
+          $sharedString = '<si>' . $string . '</si>';
+        } else {
+          $sharedString = '<si><t>' . $string . '</t></si>';
+        }
+        fputs($this->file, $sharedString);
       }
       fputs($this->file, '</sst>');
     }
