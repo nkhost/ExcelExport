@@ -127,6 +127,7 @@ class Workbook
    *
    * @param int $number Номер листа, который собираемся клонировать
    * @param string $newName Новое название для нового листа
+   * @return int Идентификатор нового листа
    * @return void
    * @throws Exception
    */
@@ -181,6 +182,8 @@ class Workbook
       $workbookXml
     );
     file_put_contents($this->workbookPath, $workbookXml);
+  
+    return $newWorksheetNumber;
   }
   
   /**

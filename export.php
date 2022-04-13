@@ -87,6 +87,8 @@ $sheet->finishRowsInserting();
 // Лист 2
 $sheet2 = $workbook->getWorksheet(2);
 $sheet2->initRowsInserting(1, ['A', 'B', 'C', 'D', 'E']);
+$sheet2->insertRow([new Formula('SUM(B' . $i . ':D' . $i . ')'), rand(0, 10), rand(0, 10), rand(0, 10), substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(20 / strlen($x)))), 1, 20)]);
+$sheet2->insertRow(['', '', '', '', ''], [$s2, $style2, $style3, $style4, $style5]);
 for ($i = 1; $i < 1000; $i++) {
   $sheet2->insertRow([new Formula('SUM(B' . $i . ':D' . $i . ')'), rand(0, 10), rand(0, 10), rand(0, 10), substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(20 / strlen($x)))), 1, 20)]);
 }
