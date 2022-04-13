@@ -140,28 +140,25 @@ class SharedStrings
   
   /**
    * Сформировать строку из подстрок. Каждая подстрока может иметь свой цвет и размер шрифта
-   * @param array $strings Массив строк
-   * @param array $colors Массив цветов в формате RGB (FF22AA) в соответствии с массивом строк. Null - не менять цвет
-   * @param array $sizes Массив размеров в соответствии с массивом строк. Null - не менять размер
+   * @param string $string Массив строк
+   * @param string|null $color Массив цветов в формате RGB (FF22AA) в соответствии с массивом строк. Null - не менять цвет
+   * @param int|null $size Массив размеров в соответствии с массивом строк. Null - не менять размер
    * @return string Строка в XML формате
    */
-  public static function customString($strings, $colors = [], $sizes = [])
+  public static function customString(string $string, ?string $color = null, ?int $size=null): string
   {
-    $result = '';
-    foreach ($strings as $index => $string) {
-      $result .= '<r>';
-      if (!empty($colors[$index]) || !empty($sizes[$index])) {
-        $result .= '<rPr>';
-        if (!empty($colors[$index])) {
-          $result .= '<color rgb="' . $colors[$index] . '"/>';
-        }
-        if (!empty($sizes[$index])) {
-          $result .= '<sz val="' . $sizes[$index] . '"/>';
-        }
-        $result .= '</rPr>';
+    $result = '<r>';
+    if (!empty($string) || !empty($color)) {
+      $result .= '<rPr>';
+      if ($color) {
+        $result .= '<color rgb="' . $color . '"/>';
       }
-      $result .= '<t xml:space="preserve">' . $string . '</t></r>';
+      if ($size) {
+        $result .= '<sz val="' . $size . '"/>';
+      }
+      $result .= '</rPr>';
     }
+    $result .= '<t xml:space="preserve">' . $string . '</t></r>';
     return $result;
   }
 }

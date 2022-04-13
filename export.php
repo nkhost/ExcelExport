@@ -71,11 +71,9 @@ for ($i = 0; $i < 10000; $i++) {
     8,
     rand(0, 5000),
     rand(0, 5000),
-    SharedStrings::customString(
-      ['Обычный текст ', 'Красный текст ', 'Зелёный текст'],
-      [null, 'FF0000', '22AA00'],
-      [null, null, 20]
-    ),
+    SharedStrings::customString("Обычный текст\n") .
+    SharedStrings::customString("Красный текст ", 'FF0000') .
+    SharedStrings::customString("Зелёный текст", '22AA00', 8),
     'Что то ещё там ' . rand(0, 5000),
     'Что то ещё там ' . rand(0, 5000)
   ],
