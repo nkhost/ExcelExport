@@ -13,9 +13,9 @@ use Exportella\SharedStrings;
 $workbook = new Workbook(__DIR__ . '/templates/template.xlsx');
 $workbook->extract();
 
-$workbook->renameWorksheet(1, 'Новое название 1');
+$workbook->renameWorksheet(1, '03.04.2005');
 $workbook->renameWorksheet(2, 'Новое название 2');
-$workbook->cloneWorksheet(1, 'Третий');
+$workbook->cloneWorksheet(1, '01.02.2003');
 
 $sheet = $workbook->getWorksheet(1);
 
@@ -54,7 +54,7 @@ $sheet->initRowsInserting(7, ['B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 
 
 $styleMap = [0 => $style1, 1 => $style2, 2 => $style3, 3 => $style4, 4 => $style5];
 
-for ($i = 0; $i < 10000; $i++) {
+for ($i = 0; $i < 1000; $i++) {
   $f = new Formula('J' . ($i + 7) . '+M' . ($i + 7));
   $v2 = rand(0, 4);
   $s2 = $styleMap[$v2];

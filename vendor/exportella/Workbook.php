@@ -118,7 +118,7 @@ class Workbook
       throw new \Exception('Не найден файл workbook.xml');
     }
     $workbookXml = file_get_contents($this->workbookPath);
-    $workbookXml = preg_replace('/(<sheet name=\")([^\"]+)(\"[^>]+sheetId=\"' . $number . '\"[^>]+>)/', '$1' . preg_quote($newName, '/') . '$3', $workbookXml);
+    $workbookXml = preg_replace('/(<sheet name=\")([^\"]+)(\"[^>]+sheetId=\"' . $number . '\"[^>]+>)/', '${1}' . $newName. '${3}', $workbookXml);
     file_put_contents($this->workbookPath, $workbookXml);
   }
   
@@ -178,9 +178,10 @@ class Workbook
     // Добавляем запись с информацией о новом листе в файл workbook.xml
     $workbookXml = str_replace(
       '</sheets>',
-      '<sheet name="' . preg_quote($newName, '/') . '" sheetId="' . $newWorksheetNumber . '" r:id="rId' . $newRId . '"/></sheets>',
+      '<sheet name="' . $newName . '" sheetId="' . $newWorksheetNumber . '" r:id="rId' . $newRId . '"/></sheets>',
       $workbookXml
     );
+  
     file_put_contents($this->workbookPath, $workbookXml);
   
     return $newWorksheetNumber;

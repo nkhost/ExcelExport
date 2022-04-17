@@ -293,7 +293,7 @@ class Worksheet
    * @return void
    * @throws Exception
    */
-  public function insertRow(array $dataList, ?array $stylesList = [], ?float $height = null, bool $ignoreDuplicates = true): void
+  public function insertRow(array $dataList, ?array $stylesList = [], ?float $height = null, bool $ignoreDuplicates = true, bool $preserveXmlTags = true): void
   {
     if(!$this->insertFile){
       throw new Exception('File not open');
