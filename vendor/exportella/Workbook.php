@@ -140,7 +140,7 @@ class Workbook
     // Получаем номер нового листа (номер последнего +1)
     $matchesWorkbook = [];
     $workbookXml = file_get_contents($this->workbookPath);
-    preg_match_all('/<sheet[^>]+sheetId=\"([^\"])\"[^>]+>/', $workbookXml, $matchesWorkbook);
+    preg_match_all('/<sheet[^>]+sheetId=\"([^\"]+)\"[^>]+>/', $workbookXml, $matchesWorkbook);
     if (empty($matchesWorkbook) || empty($matchesWorkbook[1])) {
       throw new \Exception('Ошибка при поиске листов в workbook');
     }

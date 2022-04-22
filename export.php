@@ -16,8 +16,16 @@ $workbook->extract();
 $workbook->renameWorksheet(1, '03.04.2005');
 $workbook->renameWorksheet(2, 'Новое название 2');
 $workbook->cloneWorksheet(1, '01.02.2003');
+$workbook->cloneWorksheet(1, '4');
+$workbook->cloneWorksheet(1, '5');
+$workbook->cloneWorksheet(1, '6');
+$workbook->cloneWorksheet(1, '7');
+$workbook->cloneWorksheet(1, '8');
+$workbook->cloneWorksheet(1, '9');
+$workbook->cloneWorksheet(1, '10');
+$workbook->cloneWorksheet(1, '11');
 
-$sheet = $workbook->getWorksheet(1);
+$sheet = $workbook->getWorksheet(11);
 
 // Сохраняем номера стилей
 $style1 = $sheet->getStyleIndex('M4');
