@@ -16,12 +16,6 @@ class SharedStrings
   protected $path;
   
   /**
-   * Дескриптор открытого файла
-   * @var resource
-   */
-  protected $file;
-  
-  /**
    * Массив новых (добавленных) строк
    * @var array
    */
@@ -57,36 +51,11 @@ class SharedStrings
    */
   public function load()
   {
-    $tag = '';          // Буфер для хранения последнего тега
-    $inTag = false;     // Флаг - курсор чтения файла находится внутри тега
-    $lastSiOffset = 0;  // Позиция последнего тега </si> а файле
-    
-    $this->file = fopen($this->path, 'r+t');
-    if (!$this->file) {
-      throw new Exception('Can\'t open sharedStrings.xml');
-    }
-    
-    // Считываем xml-теги из файла
-    while (!feof($this->file)) {
-      $c = fgetc($this->file);
-      
-      if ($c === '<') { // Начало тега
-        $inTag = true;
-        $tag = '<';
-      } elseif ($c === '>') { // Конец тега
-        $inTag = false;
-        $tag .= '>';
-        
-        if ($tag === '</si>') {
-          $this->index++;
-          $lastSiOffset = ftell($this->file); // Запоминаем положение последнего тега </si>
-        }
-      } elseif ($inTag) {
-        $tag .= $c;
-      }
-    }
-    
-    fseek($this->file, $lastSiOffset); // Ставим курсор в файле после последнего тега </si>
+    $matches = [];
+    $fileContent = file_get_contents($this->path);
+    preg_match_all('/<si[^>]*>(.+?)<\/si>/s', $fileContent, $matches);
+    $this->strings = $matches[1];
+    $this->index = count($this->strings);
   }
   
   /**
@@ -96,24 +65,27 @@ class SharedStrings
    */
   public function save()
   {
-    
-    if (!$this->file) {
-      return;
-    }
+    $file = fopen($this->path, 'wt');
+    $stringsCount = count($this->strings);
+    $header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' .
+      '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' . $stringsCount . '" uniqueCount="' . $stringsCount . '">';
+    fputs($file, $header);
     
     if (!empty($this->strings)) {
       foreach ($this->strings as $string) {
-        if (strpos($string, '<r>') !== false) {
+        // Проверка наличия тегов (форматирования и стилей) внутри строки
+        if (strpos($string, '<') !== false) {
           $sharedString = '<si>' . $string . '</si>';
         } else {
+          // Если просто текст
           $sharedString = '<si><t>' . $string . '</t></si>';
         }
-        fputs($this->file, $sharedString);
+        fputs($file, $sharedString);
       }
-      fputs($this->file, '</sst>');
+      fputs($file, '</sst>');
     }
     
-    fclose($this->file);
+    fclose($file);
   }
   
   /**
