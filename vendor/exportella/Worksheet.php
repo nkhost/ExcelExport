@@ -150,7 +150,7 @@ class Worksheet
       $type = 't="s"';
       $v = '<v>' . $this->sharedStrings->getStringIndex($value) . '</v>';
     } elseif (is_numeric($value)) {
-      $v = "<v>$value</v>";
+      $v = '<v>' . str_replace(',', '.', $value) . '</v>';
     } elseif ($value === null) {
       $v = '';
     } elseif ($value instanceof Formula) {
@@ -307,7 +307,7 @@ class Worksheet
         $v = '<v>' . $this->sharedStrings->getStringIndex($dataList[$i], $ignoreDuplicates) . '</v>';
       } elseif (is_numeric($dataList[$i])) {
         $t = '';
-        $v = '<v>' . $dataList[$i] . '</v>';
+        $v = '<v>' . str_replace(',', '.', $dataList[$i]) . '</v>';
       } elseif ($dataList[$i] instanceof Formula) {
         $t = '';
         $v = '<f>' . $dataList[$i] . '</f>';

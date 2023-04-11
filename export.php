@@ -57,6 +57,9 @@ $sheet->setCellValue('C11', "Тест", $style6);
 
 $sheet->saveCells();
 
+$sheet1 = $workbook->getWorksheet(1);
+$sheet1->setCellValue('C11', 3.1456, $style4);
+$sheet1->saveCells();
 
 $sheet->initRowsInserting(7, ['B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R']);
 
