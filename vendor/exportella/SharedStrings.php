@@ -51,6 +51,10 @@ class SharedStrings
    */
   public function load()
   {
+    if (!file_exists($this->path)) {
+      throw new \Exception('Не найден файл sharedStrings.xml. Шаблон должен содержать хотя бы одну ячейку с текстовым значением');
+    }
+    
     $matches = [];
     $fileContent = file_get_contents($this->path);
     preg_match_all('/<si[^>]*>(.+?)<\/si>/s', $fileContent, $matches);
