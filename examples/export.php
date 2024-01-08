@@ -1,20 +1,19 @@
 <?php
-require_once './vendor/exportella/PclZip.php';
-require_once './vendor/exportella/Workbook.php';
-require_once './vendor/exportella/Worksheet.php';
-require_once './vendor/exportella/SharedStrings.php';
-require_once './vendor/exportella/Formula.php';
+require_once '../library/PclZip.php';
+require_once '../library/Workbook.php';
+require_once '../library/Worksheet.php';
+require_once '../library/SharedStrings.php';
+require_once '../library/Formula.php';
 
-use Exportella\Workbook;
-use Exportella\Formula;
-use Exportella\SharedStrings;
+use ExcelExport\Workbook;
+use ExcelExport\Formula;
+use ExcelExport\SharedStrings;
 
-//$workbook = new Workbook(__DIR__ . '/templates/template.xlsx', __DIR__ . '/data');
 $workbook = new Workbook(__DIR__ . '/templates/template.xlsx');
 $workbook->extract();
 
 $workbook->renameWorksheet(1, '03.04.2005');
-$workbook->renameWorksheet(2, 'Новое название 2');
+$workbook->renameWorksheet(2, 'New name 2');
 $workbook->cloneWorksheet(1, '01.02.2003');
 $workbook->cloneWorksheet(1, '4');
 $workbook->cloneWorksheet(1, '5');
@@ -52,8 +51,8 @@ $sheet->setCellValue('C2', "Тест", $style1);
 $sum = new Formula('SUM(H7:H1006)');
 $sheet->setCellValue('C3', $sum, $style3);
 
-$sheet->setCellValue('C10', "Тест", $style4);
-$sheet->setCellValue('C11', "Тест", $style6);
+$sheet->setCellValue('C10', "test", $style4);
+$sheet->setCellValue('C11', "test", $style6);
 
 $sheet->saveCells();
 
@@ -71,22 +70,22 @@ for ($i = 0; $i < 1000; $i++) {
   $s2 = $styleMap[$v2];
   $sheet->insertRow([
     $v2,
-    '    <r><t>привет</t></r>
+    '    <r><t>test</t></r>
          <r><rPr><sz val="11"/><color rgb="FF0000"/></rPr>
          <t xml:space="preserve"> ' . rand(0, 5000) . '</t></r>',
     3,
     $f,
-    "sdfs",
+    "test string",
     6234.232,
     7,
     8,
     rand(0, 5000),
     rand(0, 5000),
-    SharedStrings::customString("Обычный текст\n") .
-    SharedStrings::customString("Красный текст ", 'FF0000') .
-    SharedStrings::customString("Зелёный текст", '22AA00', 8),
-    'Что то ещё там ' . rand(0, 5000),
-    'Что то ещё там ' . rand(0, 5000)
+    SharedStrings::customString("Common text\n") .
+    SharedStrings::customString("Red text ", 'FF0000') .
+    SharedStrings::customString("Green text", '22AA00', 8),
+    'Sample text ' . rand(0, 5000),
+    'Sample text ' . rand(0, 5000)
   ],
     [$s2, $style2, $style3, $style4, $style5, $style7, null, $style6, $style5]
   );
@@ -96,12 +95,15 @@ $sheet->finishRowsInserting();
 // Лист 2
 $sheet2 = $workbook->getWorksheet(2);
 $sheet2->initRowsInserting(1, ['A', 'B', 'C', 'D', 'E']);
-$sheet2->insertRow([new Formula('SUM(B' . $i . ':D' . $i . ')'), rand(0, 10), rand(0, 10), rand(0, 10), substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(20 / strlen($x)))), 1, 20)]);
+$sheet2->insertRow([new Formula('SUM(B1:D1)'), rand(0, 10), rand(0, 10), rand(0, 10), substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(20 / strlen($x)))), 1, 20)]);
 $sheet2->insertRow(['', '', '', '', ''], [$s2, $style2, $style3, $style4, $style5]);
 for ($i = 1; $i < 1000; $i++) {
-  $sheet2->insertRow([new Formula('SUM(B' . $i . ':D' . $i . ')'), rand(0, 10), rand(0, 10), rand(0, 10), substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(20 / strlen($x)))), 1, 20)]);
+  $sheet2->insertRow([new Formula('SUM(B' . ($i + 2) . ':D' . ($i + 2) . ')'), rand(0, 10), rand(0, 10), rand(0, 10), substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(20 / strlen($x)))), 1, 20)]);
 }
 $sheet2->finishRowsInserting();
 
-$workbook->createXlsx(__DIR__ . '/data/test.xlsx');
+$exportPath = __DIR__ . '/exported_files/output.xlsx';
+
+$workbook->createXlsx($exportPath);
 $workbook->clean();
+echo 'File generated: ' . $exportPath . PHP_EOL;

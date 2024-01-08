@@ -1,6 +1,6 @@
 <?php
 
-namespace Exportella;
+namespace ExcelExport;
 
 use \Exception;
 
@@ -57,7 +57,7 @@ class Workbook
   public function extract()
   {
     $zip = new PclZip($this->templatePath);
-    $this->unpackedDir = $this->tmpDir . '/' . uniqid('exportella_');
+    $this->unpackedDir = $this->tmpDir . '/' . uniqid('ExportExcel_');
     if (empty($zip->extract(PclZip::PCLZIP_OPT_REPLACE_NEWER, PclZip::PCLZIP_OPT_PATH, $this->unpackedDir))) {
       throw new Exception('Unable to extract xlsx file');
     }
