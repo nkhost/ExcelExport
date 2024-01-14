@@ -78,6 +78,7 @@ class Worksheet
   /**
    * @param string $path Путь к sheet_.xml
    * @param Workbook $workbook Книга
+   * @throws Exception
    */
   public function __construct(string $path, Workbook $workbook)
   {
@@ -290,6 +291,7 @@ class Worksheet
    * @param array|null $stylesList Идентификаторы стилей ячеек
    * @param float|null $height Высота строки
    * @param bool $ignoreDuplicates Не искать строковое значение среди существующих, а записать как новую
+   * @param bool $preserveXmlTags
    * @return void
    * @throws Exception
    */

@@ -1,4 +1,14 @@
 <?php
+// You can run this script from bash: php export_advanced.php
+// This script contains various library features such as:
+// - copying sheets
+// - renaming sheets
+// - copying styles
+// - formulas
+// - raw cell values
+// - custom strings (color, size)
+// But no comments
+
 require_once '../library/PclZip.php';
 require_once '../library/Workbook.php';
 require_once '../library/Worksheet.php';
@@ -26,7 +36,6 @@ $workbook->cloneWorksheet(1, '11');
 
 $sheet = $workbook->getWorksheet(11);
 
-// Сохраняем номера стилей
 $style1 = $sheet->getStyleIndex('M4');
 $style2 = $sheet->getStyleIndex('N4');
 $style3 = $sheet->getStyleIndex('O4');
@@ -35,7 +44,7 @@ $style5 = $sheet->getStyleIndex('Q4');
 $style6 = $sheet->getStyleIndex('R4');
 $style7 = $sheet->getStyleIndex('S4');
 
-// удаляем ячейки со стилями
+// Delete cells
 $sheet->setCellValue('M4', null);
 $sheet->setCellValue('N4', null);
 $sheet->setCellValue('O4', null);
@@ -92,7 +101,7 @@ for ($i = 0; $i < 1000; $i++) {
 }
 $sheet->finishRowsInserting();
 
-// Лист 2
+// Sheet2
 $sheet2 = $workbook->getWorksheet(2);
 $sheet2->initRowsInserting(1, ['A', 'B', 'C', 'D', 'E']);
 $sheet2->insertRow([new Formula('SUM(B1:D1)'), rand(0, 10), rand(0, 10), rand(0, 10), substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(20 / strlen($x)))), 1, 20)]);
